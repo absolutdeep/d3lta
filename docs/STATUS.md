@@ -391,12 +391,34 @@ plans landed:
   `https://tweakcn.com` since theme-name resolution now hits the same-origin
   `/api/themes/name` route (plan 012). `connect-src` is `'self'`.
 
+### 015 — Three new pages: Reminders, Tasks, Weather (2026-08-02)
+Added three feature pages with full CRUD + a read-only weather widget.
+
+- **DB**: added `reminders` + `tasks` tables to `lib/db/schema.ts`; generated
+  migration `lib/db/migrations/0001_flaky_crystal.sql` (applied on a temp DB;
+  the two tables were also created directly in the running `d3lta.db` since the
+  fire-and-forget migrator only seeds the original 3 tables).
+- **API routes** (zod-validated, `await getDb()`, `dbError`/`serverLog`):
+  - `app/api/reminders/route.ts` (GET/POST) + `app/api/reminders/[id]/route.ts`
+    (PUT/DELETE) — title, notes, dueAt, completed.
+  - `app/api/tasks/route.ts` (GET/POST) + `app/api/tasks/[id]/route.ts`
+    (PUT/DELETE) — title, description, status (pending/in_progress/done), dueAt.
+  - `app/api/weather/route.ts` — server-side Open-Meteo fetch for **Farmingdale,
+    NY 11735** (lat 40.7301, lon -73.4453); no API key. Returns current
+    conditions + 5-day forecast.
+- **Pages**: `app/reminders/page.tsx`, `app/tasks/page.tsx`,
+  `app/weather/page.tsx` — client components with list + add form + inline
+  edit/delete (CRUD) / current + forecast (weather). Native `<select>`/`<textarea>`
+  styled with Tailwind (no new shadcn primitives added).
+- **Nav**: added Reminders/Tasks/Weather to `components/layout/sidebar.tsx`
+  (Bell / CheckSquare / CloudSun icons), placed under Dashboard.
+
 ---
 
-**All 13 plans complete + follow-ups.** Final verification: `pnpm run lint`
-exit 0, `npx tsc --noEmit` exit 0, `pnpm test` **27 passing**, `pnpm run build`
-exit 0, dev server on `:3000` serving `/`, `/agents`, `/system`, `/visuals`,
-`/themes`, `/api/*` at 200.
+**All 13 plans complete + follow-ups + 3 new pages.** Final verification:
+`pnpm run lint` exit 0, `npx tsc --noEmit` exit 0, `pnpm test` **27 passing**,
+dev server on `:3000` — `/reminders`, `/tasks`, `/weather` and their APIs all
+return 200, with full CRUD round-trips verified live.
 
 ---
 

@@ -12,6 +12,9 @@ import {
   FileText,
   Server,
   Bot,
+  Bell,
+  CheckSquare,
+  CloudSun,
 } from "lucide-react";
 
 import { cn } from "@/lib/utils";
@@ -21,6 +24,9 @@ import { ScrollArea } from "@/components/ui/scroll-area";
 
 const navItems = [
   { href: "/", label: "Dashboard", icon: LayoutDashboard },
+  { href: "/reminders", label: "Reminders", icon: Bell },
+  { href: "/tasks", label: "Tasks", icon: CheckSquare },
+  { href: "/weather", label: "Weather", icon: CloudSun },
   { href: "/themes", label: "Themes", icon: Palette },
   { href: "/visuals", label: "Visuals", icon: Orbit },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
