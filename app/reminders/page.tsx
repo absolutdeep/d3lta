@@ -126,7 +126,8 @@ export default function RemindersPage() {
       <Card className="border-fuchsia-500/40 bg-fuchsia-500/5">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground">
-            <Plus className="h-4 w-4 text-fuchsia-400" /> New reminder
+            <Plus className="h-4 w-4 text-fuchsia-700 dark:text-fuchsia-400" />{" "}
+            New reminder
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -153,7 +154,7 @@ export default function RemindersPage() {
             onChange={(e) => setNotes(e.target.value)}
           />
           <Button
-            className="border-fuchsia-500/40 text-fuchsia-300"
+            className="border-fuchsia-500/40 text-fuchsia-700 dark:text-fuchsia-300"
             onClick={() => void create()}
             disabled={!title.trim()}
           >
@@ -163,7 +164,7 @@ export default function RemindersPage() {
       </Card>
 
       {error && (
-        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 font-mono text-sm text-red-400">
+        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 font-mono text-sm text-red-700 dark:text-red-400">
           Failed to load reminders: {error}
         </div>
       )}
@@ -171,10 +172,11 @@ export default function RemindersPage() {
       <Card className="border-cyan-500/40 bg-cyan-500/5">
         <CardHeader>
           <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground">
-            <Bell className="h-4 w-4 text-cyan-400" /> Reminders{" "}
+            <Bell className="h-4 w-4 text-cyan-700 dark:text-cyan-400" />{" "}
+            Reminders{" "}
             <Badge
               variant="outline"
-              className="border-cyan-500/40 font-mono text-cyan-300 tabular-nums"
+              className="border-cyan-500/40 font-mono text-cyan-700 dark:text-cyan-300 tabular-nums"
             >
               {reminders.length}
             </Badge>

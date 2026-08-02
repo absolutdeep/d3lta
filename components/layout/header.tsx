@@ -29,7 +29,7 @@ export function Header() {
 
       <div className="ml-auto flex items-center gap-2">
         <span className="hidden items-center gap-1.5 rounded-md border border-emerald-500/40 px-2 py-1 text-[10px] font-semibold tracking-[0.2em] text-emerald-400 uppercase md:inline-flex">
-          <span className="h-1 w-1 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="h-1 w-1 rounded-full bg-emerald-400 motion-safe:animate-pulse" />
           Grid online
         </span>
 
