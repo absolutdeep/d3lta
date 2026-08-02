@@ -1,5 +1,5 @@
-// GET /api/weather — current conditions + short forecast for Farmingdale, NY 11735
-// Server-side fetch to Open-Meteo (no API key required).
+// GET /api/weather — current conditions + 8-day forecast for Farmingdale, NY 11735
+// Server-side fetch to Open-Meteo (no API key required). Imperial units, NY tz.
 import { NextRequest, NextResponse } from "next/server";
 import { serverLog } from "@/lib/error-handling";
 
@@ -9,6 +9,7 @@ const SOURCE = "api/weather";
 const LAT = 40.7301;
 const LON = -73.4453;
 const LOCATION_LABEL = "Farmingdale, NY 11735";
+const TIMEZONE = "America/New_York";
 
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
@@ -71,7 +72,7 @@ export async function GET(_req: NextRequest) {
       `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}` +
       `&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weather_code,wind_speed_10m` +
       `&daily=weather_code,temperature_2m_max,temperature_2m_min` +
-      `&timezone=auto&forecast_days=5`;
+      `&temperature_unit=fahrenheit&wind_speed_unit=mph&timezone=${TIMEZONE}&forecast_days=8`;
 
     const res = await fetch(url, { next: { revalidate: 600 } });
     if (!res.ok) {

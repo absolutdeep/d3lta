@@ -7,6 +7,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
+import { DateTimePicker } from "@/components/reminders/datetime-picker";
 import { logger } from "@/lib/error-handling";
 
 const SOURCE = "reminders-page";
@@ -32,7 +33,7 @@ export default function RemindersPage() {
   const [error, setError] = useState<string | null>(null);
   const [title, setTitle] = useState("");
   const [notes, setNotes] = useState("");
-  const [dueAt, setDueAt] = useState("");
+  const [dueAt, setDueAt] = useState<Date | null>(null);
 
   const load = async () => {
     setLoading(true);
@@ -60,13 +61,13 @@ export default function RemindersPage() {
         body: JSON.stringify({
           title: title.trim(),
           notes: notes.trim() || null,
-          dueAt: dueAt ? new Date(dueAt).toISOString() : null,
+          dueAt: dueAt ? dueAt.toISOString() : null,
         }),
       });
       if (!res.ok) throw new Error(`Request failed: ${res.status}`);
       setTitle("");
       setNotes("");
-      setDueAt("");
+      setDueAt(null);
       await load();
     } catch (err) {
       const message = err instanceof Error ? err.message : String(err);
@@ -133,10 +134,10 @@ export default function RemindersPage() {
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
-            <Input
-              type="datetime-local"
+            <DateTimePicker
               value={dueAt}
-              onChange={(e) => setDueAt(e.target.value)}
+              onChange={setDueAt}
+              placeholder="Pick date & time"
             />
           </div>
           <textarea

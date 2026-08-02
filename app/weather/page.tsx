@@ -74,7 +74,7 @@ export default function WeatherPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Weather</h1>
         <p className="text-muted-foreground">
-          Current conditions and 5-day forecast for Farmingdale, NY 11735.
+          Current conditions and 7-day forecast for Farmingdale, NY 11735.
         </p>
       </div>
 
@@ -102,7 +102,7 @@ export default function WeatherPage() {
                   </div>
                   <div>
                     <p className="text-4xl font-bold">
-                      {Math.round(now!.temperature)}°C
+                      {Math.round(now!.temperature)}°F
                     </p>
                     <p className="text-sm text-muted-foreground">
                       {now!.weatherLabel}
@@ -110,23 +110,25 @@ export default function WeatherPage() {
                   </div>
                 </div>
                 <div className="space-y-1 text-right text-sm text-muted-foreground">
-                  <p>Feels like {Math.round(now!.apparentTemperature)}°C</p>
+                  <p>Feels like {Math.round(now!.apparentTemperature)}°F</p>
                   <p>Humidity {now!.humidity}%</p>
                   <p className="flex items-center justify-end gap-1">
-                    <Wind className="h-3 w-3" /> {now!.windSpeed} km/h
+                    <Wind className="h-3 w-3" /> {Math.round(now!.windSpeed)}{" "}
+                    mph
                   </p>
                 </div>
               </div>
             </CardContent>
           </Card>
 
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-5">
-            {data.daily.map((d) => {
-              const label = new Date(d.date).toLocaleDateString(undefined, {
-                weekday: "short",
-                month: "short",
-                day: "numeric",
-              });
+          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-8">
+            {data.daily.map((d, i) => {
+              const label =
+                i === 0
+                  ? "Today"
+                  : new Date(d.date).toLocaleDateString("en-US", {
+                      weekday: "short",
+                    });
               return (
                 <Card key={d.date}>
                   <CardContent className="space-y-1 p-4 text-center">
