@@ -1,0 +1,18 @@
+# Dependencies & build artifacts
+node_modules
+.next
+out
+build
+dist
+
+# Lockfiles (machine-generated, never format)
+pnpm-lock.yaml
+package-lock.json
+yarn.lock
+
+# Generated / analysis output
+graphify-out
+
+# Env & misc
+.env*
+*.md
