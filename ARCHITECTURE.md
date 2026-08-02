@@ -142,7 +142,10 @@ d3lta is a Next.js 16.2.12 dashboard application featuring:
 - Error logging system
 
 ### Phase 2: Theme System
-- Theme library persistence (localStorage → DB)
+- Theme library persistence — **localStorage (active) is the single source**;
+  the DB `/api/themes` + `/api/preferences` routes exist but are not wired
+  into the client (dormant). Decide: wire server persistence or remove the
+  routes (see docs/REVIEW_2026-08-02, Batch 3).
 - Drop zone for tweakcn URLs/JSON
 - Theme preview and application
 - CSS variable injection system

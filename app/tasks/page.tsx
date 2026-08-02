@@ -122,11 +122,13 @@ export default function TasksPage() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <Input
               placeholder="Title"
+              aria-label="Task title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
             <select
               className="h-9 rounded-md border border-input bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
+              aria-label="Task status"
               value={status}
               onChange={(e) => setStatus(e.target.value as Task["status"])}
             >
@@ -136,6 +138,7 @@ export default function TasksPage() {
             </select>
           </div>
           <textarea
+            aria-label="Task description"
             className="min-h-[72px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             placeholder="Description (optional)"
             value={description}
@@ -195,7 +198,7 @@ export default function TasksPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => void remove(t.id)}
-                      title="Delete"
+                      aria-label={`Delete task ${t.title}`}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

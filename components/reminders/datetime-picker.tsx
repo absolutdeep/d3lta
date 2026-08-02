@@ -19,6 +19,7 @@ interface DateTimePickerProps {
   placeholder?: string;
   id?: string;
   className?: string;
+  "aria-label"?: string;
 }
 
 function toTimeValue(d: Date | null): string {
@@ -35,6 +36,7 @@ export function DateTimePicker({
   placeholder = "Pick date & time",
   id,
   className,
+  "aria-label": ariaLabel,
 }: DateTimePickerProps) {
   const [open, setOpen] = React.useState(false);
 
@@ -66,6 +68,7 @@ export function DateTimePicker({
           id={id}
           type="button"
           variant="outline"
+          aria-label={ariaLabel ?? undefined}
           data-empty={!value}
           className={cn(
             "w-full justify-start text-left font-normal",

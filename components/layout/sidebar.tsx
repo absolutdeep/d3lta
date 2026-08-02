@@ -2,40 +2,13 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Palette,
-  Orbit,
-  Settings,
-  BarChart3,
-  Users,
-  FileText,
-  Server,
-  Bot,
-  Bell,
-  CheckSquare,
-  CloudSun,
-} from "lucide-react";
+import { Orbit, Settings } from "lucide-react";
 
 import { cn } from "@/lib/utils";
+import { navItems } from "@/components/layout/nav-items";
 import { useThemeStore } from "@/store/use-theme-store";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-
-const navItems = [
-  { href: "/", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/reminders", label: "Reminders", icon: Bell },
-  { href: "/tasks", label: "Tasks", icon: CheckSquare },
-  { href: "/weather", label: "Weather", icon: CloudSun },
-  { href: "/themes", label: "Themes", icon: Palette },
-  { href: "/visuals", label: "Visuals", icon: Orbit },
-  { href: "/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/users", label: "Users", icon: Users },
-  { href: "/reports", label: "Reports", icon: FileText },
-  { href: "/system", label: "System", icon: Server },
-  { href: "/agents", label: "Agents", icon: Bot },
-  { href: "/settings", label: "Settings", icon: Settings },
-];
 
 export function Sidebar() {
   const pathname = usePathname();
@@ -69,8 +42,9 @@ export function Sidebar() {
                 key={item.href}
                 href={item.href}
                 title={sidebarCollapsed ? item.label : undefined}
+                aria-current={active ? "page" : undefined}
                 className={cn(
-                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors",
+                  "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none",
                   active
                     ? "bg-sidebar-accent text-sidebar-accent-foreground"
                     : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",

@@ -46,7 +46,6 @@
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
-  --font-serif: var(--font-geist-sans), ui-serif, Georgia, serif;
   --radius: 1.4rem;
   --tracking-tighter: calc(var(--tracking-normal) - 0.05em);
   --tracking-tight: calc(var(--tracking-normal) - 0.025em);
@@ -108,7 +107,6 @@
   --sidebar-ring: oklch(0 0 0);
   --destructive-foreground: oklch(1 0 0);
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-geist-sans), ui-serif, Georgia, serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --shadow-color: oklch(0 0 0);
   --shadow-opacity: 0.1;
@@ -168,7 +166,6 @@
   --destructive-foreground: oklch(1 0 0);
   --radius: 1.4rem;
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
-  --font-serif: var(--font-geist-sans), ui-serif, Georgia, serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
   --shadow-color: oklch(0 0 0);
   --shadow-opacity: 0.1;
@@ -202,5 +199,27 @@
   }
   html {
     @apply font-sans;
+  }
+  /* Hallmark gate 34: clip, never hidden, so position: sticky/fixed keep
+     working on descendants and no viewport ever horizontally scrolls. */
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+
+/* Accessibility: respect users who prefer reduced motion. Neutralise the
+   entrance/exit animations that tw-animate-css and shadcn components inject
+   (fade/slide/zoom) plus any transition-all driven motion, without disabling
+   layout. Individual elements can opt back in with motion-safe: variants if a
+   meaningful animation genuinely needs to survive for other users. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }

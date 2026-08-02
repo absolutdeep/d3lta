@@ -422,4 +422,110 @@ return 200, with full CRUD round-trips verified live.
 
 ---
 
+### 016 — Readiness + a11y batch (REVIEW_2026-08-02 follow-up, Batch 1)
+Six fixes from the full-stack review landed and were verified. See
+`docs/REVIEW_2026-08-02.md` for the audit context.
+
+- **Mobile navigation (FIXED):** sidebar is `hidden lg:flex`, so below `lg` the
+  user had no nav (the old header hamburger toggled a sidebar that wasn't
+  rendered). Added `components/layout/mobile-nav.tsx` — a Radix `Sheet` drawer
+  (left, `w-72`) with the Menu trigger shown only below `lg`. Nav list is now
+  a single source of truth in `components/layout/nav-items.ts`, shared by the
+  desktop `sidebar.tsx` and the drawer (no more drift). Each drawer link closes
+  on click via `SheetClose` and ships `focus-visible` ring + `aria-current`.
+  Desktop sidebar links got the same `focus-visible` ring + `aria-current`.
+- **API trust boundary (ADDED):** root `middleware.ts` (matcher `/api/:path*`).
+  Local/loopback hosts pass freely; when `D3LTA_API_TOKEN` is exported, any
+  request hitting the machine on a non-loopback host must present
+  `x-d3lta-token` or gets 401. Constant-time compare (pure JS — middleware
+  runtime can't use `node:crypto`). With no token set, nothing is enforced
+  (dev default). **Verified against prod build**: loopback 200; non-loopback
+  no/wrong token 401; correct token 200.
+- **`/api/logs` hardened (ADDED):** new in-memory sliding-window limiter
+  `lib/rate-limit.ts`; the route now rate-limits per client IP (60 writes / 60 s
+  → 429) so an unauthenticated caller can't fill `audit_logs`.
+- **SSRF redirect fix (`/api/themes/name`):** switched from
+  `fetch(url, { redirect: "follow" })` to `redirect: "manual"` and reject any
+  3xx/opaqueredirect, so the whitelist can't be escaped by following a redirect
+  to an arbitrary host.
+- **Reduced-motion (ADDED):** `@media (prefers-reduced-motion: reduce)` block in
+  `app/globals.css` neutralising tw-animate + shadcn entrance/exit transitions.
+- **`overflow-x: clip` (ADDED):** `html, body { overflow-x: clip }` per Hallmark
+  gate 34 (never `hidden`, preserves sticky/fixed).
+
+Verification: `npx tsc --noEmit` 0, `npx eslint .` 0 errors (9 pre-existing
+warnings), `pnpm test` 27 passing, `pnpm run build` green, middleware + SSRF +
+agent/theme routes smoke-tested live.
+
+---
+
+### 017 — Accessibility batch (REVIEW_2026-08-02 follow-up, Batch 2)
+Accessibility hardening from the review (a11y findings A2/a11y + icon-only controls).
+
+- **Icon-only controls now named:** theme-library trash button gets
+  `aria-label`; reminders mark-done + delete, and tasks delete now use
+  `aria-label` (was `title`-only, which isn't an accessible name).
+- **Form fields labelled:** Reminder title, due picker, notes; task title,
+  status, description all use `aria-label` (were placeholder-only). The
+  stacking — `DateTimePicker` now accepts + forwards `aria-label` to its
+  trigger button.
+- **Responsive audit (code-level):** every responsive grid is
+  `grid-cols-1 → sm:2 → lg:3` (no overflow at 320–768); buttons/badges keep
+  `whitespace-nowrap` (no two-line clickables); header is the only `sticky
+  top-0` element; `html,body { overflow-x: clip }` (Batch 1) already guards
+  horizontal scroll. The managed browser is desktop-fixed, so visual
+  confirmation at 320/375/414/768 should be done on the :3000 dev server.
+
+Verification: `npx tsc --noEmit` 0, `npx eslint .` 0 errors (9 pre-existing
+warnings), `pnpm test` 27 passing.
+
+---
+
+### 018 — Correctness batch (REVIEW_2026-08-02 follow-up, Batch 3)
+- **Await the DB migration (FIXED).** `lib/db/client.ts` now runs the drizzle
+  migration through a shared `globalForDb.migration` promise that `getDb()`
+  `await`s on first use — the old `void migrate()` was fire-and-forget, so the
+  first query could race ahead of table creation. Migration failures
+  ("already applied" on a DB that pre-dates migrations) are still caught and
+  logged as warnings so an existing DB keeps working. Verified live: all API
+  routes return 200/201 against the real `d3lta.db`.
+- **Single-source dark-mode (FIXED).** `useThemeStore.getThemeVariables()` now
+  reads the store's already-resolved `isDarkMode` instead of re-probing
+  `prefers-color-scheme()` (which could disagree with the store between
+  renders). One source of truth for the DOM.
+- **Theme persistence decision (CLARIFIED, no code change).** Grep confirmed
+  the client **never calls** `/api/preferences` or `/api/themes` — the theme
+  library persists **only to localStorage** (Zustand `persist`). The DB
+  theme/preference routes are dormant (unwired) server API, not an active
+  dual-write. Decision: localStorage stays the single source; wiring/removing
+  the DB routes is deferred — noted in `docs/ARCHITECTURE.md` as follow-up.
+- **Reminders route var rename (FIXED).** `app/api/reminders/[id]/route.ts`
+  used a copy-pasted `themeId` variable for reminder ids; renamed to
+  `reminderId` for clarity.
+
+Verification: `npx tsc --noEmit` 0, `npx eslint .` 0 errors (9 pre-existing
+warnings), `pnpm test` 27 passing, live routes 200 against `d3lta.db`.
+
+---
+
+### 019 — Design-polish batch (REVIEW_2026-08-02 follow-up, Batch 4)
+- **Targeted transitions (Hallmark gate 10/15).** Replaced every `transition-all`
+  with the specific properties each element actually animates: `button`
+  (background-color,color,border-color,box-shadow,transform), `badge`
+  (background-color,color,border-color), theme-toggle Sun/Moon
+  (transform,opacity), system-status usage bar (width,background-color).
+  No more animating unrelated props.
+- **Dropped bogus `--font-serif` alias (Hallmark gate 48).** `--font-serif`
+  was aliased to the Geist sans face (`var(--font-geist-sans)`) in `@theme
+  inline`, `:root`, and `.dark` — a lie in the token set, and nothing
+  references it (only `font-sans`/`font-mono`/`font-heading` are consumed).
+  Removed all three definitions.
+- (`overflow-x: clip` was already applied in Batch 1, so gate 34 is closed.)
+
+Verification: `npx tsc --noEmit` 0, `npx eslint .` 0 errors (9 pre-existing
+warnings), `pnpm test` 27 passing, `pnpm run build` green, `transition-all`
+absent from `components/`.
+
+---
+
 *This document is auto-generated. For implementation details, see the codebase and ARCHITECTURE.md.*

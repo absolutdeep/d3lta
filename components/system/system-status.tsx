@@ -85,7 +85,7 @@ function StatBar({ percent }: { percent: number }) {
   return (
     <div className="h-2 w-full overflow-hidden rounded-full bg-muted">
       <div
-        className={`h-full rounded-full transition-all duration-500 ${usageColor(percent)}`}
+        className={`h-full rounded-full transition-[width,background-color] duration-500 ${usageColor(percent)}`}
         style={{ width: `${Math.min(100, Math.max(0, percent))}%` }}
       />
     </div>

@@ -131,6 +131,7 @@ export default function RemindersPage() {
           <div className="flex flex-col gap-3 sm:flex-row">
             <Input
               placeholder="Title"
+              aria-label="Reminder title"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
@@ -138,9 +139,12 @@ export default function RemindersPage() {
               value={dueAt}
               onChange={setDueAt}
               placeholder="Pick date & time"
+              id="reminder-due"
+              aria-label="Reminder due date and time"
             />
           </div>
           <textarea
+            aria-label="Reminder notes"
             className="min-h-[72px] w-full rounded-md border border-input bg-background px-3 py-2 text-sm text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
             placeholder="Notes (optional)"
             value={notes}
@@ -192,7 +196,11 @@ export default function RemindersPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => void toggle(r)}
-                      title={r.completed ? "Mark not done" : "Mark done"}
+                      aria-label={
+                        r.completed
+                          ? `Mark ${r.title} as not done`
+                          : `Mark ${r.title} as done`
+                      }
                     >
                       <Check className="h-4 w-4" />
                     </Button>
@@ -200,7 +208,7 @@ export default function RemindersPage() {
                       variant="ghost"
                       size="sm"
                       onClick={() => void remove(r.id)}
-                      title="Delete"
+                      aria-label={`Delete reminder ${r.title}`}
                     >
                       <Trash2 className="h-4 w-4" />
                     </Button>

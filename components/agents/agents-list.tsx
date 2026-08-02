@@ -111,7 +111,7 @@ export function AgentsList() {
         if (!res.ok) throw new Error(`Request failed: ${res.status}`);
         return (await res.json()) as AgentsPayload;
       },
-      intervalMs: 5000,
+      intervalMs: 60000,
       source: SOURCE,
     });
 

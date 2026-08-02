@@ -4,6 +4,7 @@ import { z } from "zod";
 import { getDb } from "@/lib/db/client";
 import { auditLogs } from "@/lib/db/schema";
 import { dbError, serverLog } from "@/lib/error-handling";
+import { rateLimit } from "@/lib/rate-limit";
 
 const SOURCE = "api/logs";
 
@@ -20,8 +21,26 @@ const logSchema = z.object({
     .optional(),
 });
 
+// Best-effort client IP for rate limiting. Falls back to a constant so the
+// limiter still bounds an unidentifiable flood.
+function clientIp(req: NextRequest): string {
+  const fwd = req.headers.get("x-forwarded-for");
+  if (fwd) return fwd.split(",")[0].trim();
+  return "unknown";
+}
+
 export async function POST(req: NextRequest) {
   try {
+    // Coarse abuse control: bound log-write rate per source IP so an
+    // unauthenticated caller can't fill the audit_logs table.
+    const ip = clientIp(req);
+    if (!rateLimit(`logs:${ip}`, { windowMs: 60_000, max: 60 })) {
+      return NextResponse.json(
+        { error: "Too many log writes" },
+        { status: 429 },
+      );
+    }
+
     const parsed = logSchema.safeParse(await req.json());
     if (!parsed.success) {
       return NextResponse.json(

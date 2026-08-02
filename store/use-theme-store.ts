@@ -111,7 +111,7 @@ export const useThemeStore = create<ThemeState>()(
 
         // Derived: get current theme variables
         getThemeVariables: () => {
-          const { currentTheme, themeLibrary, activeThemeId } = get();
+          const { activeThemeId, themeLibrary, isDarkMode } = get();
 
           // If no active theme, return empty object (let .dark class / globals.css drive colors)
           if (!activeThemeId || !themeLibrary[activeThemeId]) {
@@ -120,16 +120,11 @@ export const useThemeStore = create<ThemeState>()(
 
           const theme = themeLibrary[activeThemeId];
 
-          // Determine which variant to use based on currentTheme and system preference
-          let useDark = false;
-          if (currentTheme === "system") {
-            useDark = prefersDark();
-          } else if (currentTheme === "dark") {
-            useDark = true;
-          }
-
-          // Return the appropriate CSS variables
-          return useDark ? theme.cssVars.dark : theme.cssVars.light;
+          // Use the store's already-resolved isDarkMode (kept in sync with the
+          // theme mode + OS preference). Read from state, never re-probe the
+          // OS here — this is the single source of truth so the DOM never
+          // disagrees with the store.
+          return isDarkMode ? theme.cssVars.dark : theme.cssVars.light;
         },
       }),
       {

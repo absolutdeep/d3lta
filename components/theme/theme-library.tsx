@@ -103,6 +103,7 @@ export function ThemeLibrary() {
                       variant="ghost"
                       size="icon"
                       className="h-8 w-8"
+                      aria-label={`Remove theme ${theme.name ?? id}`}
                       onClick={() => handleRemove(id)}
                     >
                       <Trash2 className="h-3.5 w-3.5 text-muted-foreground" />

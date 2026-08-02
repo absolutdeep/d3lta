@@ -26,8 +26,14 @@ export async function GET(req: NextRequest) {
   }
 
   try {
-    const res = await fetch(url, { redirect: "follow" });
-    if (!res.ok) {
+    // Do NOT auto-follow redirects: the initial URL passes the whitelist above,
+    // but a `redirect: "follow"` fetch would happily chase a 3xx to an arbitrary
+    // host (e.g. tweakcn.com/thing -> 302 -> internal metadata IP), which is an
+    // SSRF primitive. `redirect: "manual"` lets us inspect res.url before use.
+    const res = await fetch(url, { redirect: "manual" });
+    // Any non-200 (including 3xx, which returns type "opaqueredirect" here)
+    // means we never obtained a whitelisted final document.
+    if (!res.ok || res.type === "opaqueredirect" || res.status >= 300) {
       return NextResponse.json({ name: null }, { status: 200 });
     }
     const html = await res.text();

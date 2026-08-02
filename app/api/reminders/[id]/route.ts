@@ -24,8 +24,8 @@ export async function PUT(
 ) {
   try {
     const { id } = await params;
-    const themeId = idSchema.safeParse(id);
-    if (!themeId.success) {
+    const reminderId = idSchema.safeParse(id);
+    if (!reminderId.success) {
       return NextResponse.json(
         { error: "Invalid reminder id" },
         { status: 400 },
@@ -51,7 +51,7 @@ export async function PUT(
           : {}),
         ...(completed !== undefined ? { completed } : {}),
       })
-      .where(eq(reminders.id, themeId.data))
+      .where(eq(reminders.id, reminderId.data))
       .returning();
 
     if (!result.length) {
@@ -60,7 +60,7 @@ export async function PUT(
         { status: 404 },
       );
     }
-    serverLog("info", SOURCE, "Reminder updated", { id: themeId.data });
+    serverLog("info", SOURCE, "Reminder updated", { id: reminderId.data });
     return NextResponse.json({ reminder: result[0] });
   } catch (error) {
     dbError(SOURCE, "update", error);
@@ -77,16 +77,16 @@ export async function DELETE(
 ) {
   try {
     const { id } = await params;
-    const themeId = idSchema.safeParse(id);
-    if (!themeId.success) {
+    const reminderId = idSchema.safeParse(id);
+    if (!reminderId.success) {
       return NextResponse.json(
         { error: "Invalid reminder id" },
         { status: 400 },
       );
     }
     const db = await getDb();
-    await db.delete(reminders).where(eq(reminders.id, themeId.data));
-    serverLog("info", SOURCE, "Reminder deleted", { id: themeId.data });
+    await db.delete(reminders).where(eq(reminders.id, reminderId.data));
+    serverLog("info", SOURCE, "Reminder deleted", { id: reminderId.data });
     return NextResponse.json({ success: true });
   } catch (error) {
     dbError(SOURCE, "delete", error);
