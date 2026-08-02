@@ -41,30 +41,69 @@ const stats = [
   },
 ];
 
+const statAccents = [
+  {
+    tile: "border-fuchsia-500/40 bg-fuchsia-500/5",
+    value: "text-fuchsia-300",
+    accent: "text-fuchsia-400",
+    icon: "text-fuchsia-400",
+  },
+  {
+    tile: "border-cyan-500/40 bg-cyan-500/5",
+    value: "text-cyan-300",
+    accent: "text-cyan-400",
+    icon: "text-cyan-400",
+  },
+  {
+    tile: "border-emerald-500/40 bg-emerald-500/5",
+    value: "text-emerald-300",
+    accent: "text-emerald-400",
+    icon: "text-emerald-400",
+  },
+  {
+    tile: "border-amber-500/40 bg-amber-500/5",
+    value: "text-amber-300",
+    accent: "text-amber-400",
+    icon: "text-amber-400",
+  },
+];
+
 export default function Home() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold tracking-tight">Dashboard</h1>
-        <p className="text-muted-foreground">
-          Welcome to d3lta — your dynamic dashboard.
-        </p>
+      <div className="flex items-start justify-between gap-4">
+        <div>
+          <h1 className="font-display text-2xl font-bold tracking-[0.2em] uppercase text-foreground">
+            Dashboard
+          </h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Welcome to d3lta — your dynamic dashboard.
+          </p>
+        </div>
+        <span className="shrink-0 rounded border border-emerald-500/40 px-2 py-1 font-mono text-[10px] tracking-[0.2em] text-emerald-400 uppercase">
+          STATUS: ONLINE
+        </span>
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        {stats.map((stat) => {
+        {stats.map((stat, i) => {
           const Icon = stat.icon;
+          const a = statAccents[i % statAccents.length];
           return (
-            <Card key={stat.title}>
+            <Card key={stat.title} className={`border ${a.tile}`}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-sm font-medium">
+                <CardTitle className="text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground">
                   {stat.title}
                 </CardTitle>
-                <Icon className="h-4 w-4 text-muted-foreground" />
+                <Icon className={`h-4 w-4 ${a.icon}`} />
               </CardHeader>
               <CardContent>
-                <div className="text-2xl font-bold">{stat.value}</div>
-                <p className="text-xs text-muted-foreground">{stat.change}</p>
+                <div
+                  className={`font-display text-2xl font-semibold tabular-nums ${a.value}`}
+                >
+                  {stat.value}
+                </div>
+                <p className={`mt-1 text-xs ${a.accent}`}>{stat.change}</p>
               </CardContent>
             </Card>
           );
@@ -72,23 +111,27 @@ export default function Home() {
       </div>
 
       <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-7">
-        <Card className="col-span-4">
+        <Card className="col-span-4 border-cyan-500/40 bg-cyan-500/5">
           <CardHeader>
-            <CardTitle>Overview</CardTitle>
+            <CardTitle className="tracking-[0.2em] uppercase">
+              Overview
+            </CardTitle>
             <CardDescription>Monthly revenue over time.</CardDescription>
           </CardHeader>
-          <CardContent className="flex h-72 items-center justify-center text-muted-foreground">
-            <BarChart3 className="mr-2 h-6 w-6" />
+          <CardContent className="flex h-72 items-center justify-center gap-2 border-t border-cyan-500/10 pt-4 font-mono text-xs text-muted-foreground">
+            <BarChart3 className="mr-1 h-5 w-5 text-cyan-400" />
             Chart placeholder — coming soon
           </CardContent>
         </Card>
 
-        <Card className="col-span-3">
+        <Card className="col-span-3 border-fuchsia-500/40 bg-fuchsia-500/5">
           <CardHeader>
-            <CardTitle>Recent Activity</CardTitle>
+            <CardTitle className="tracking-[0.2em] uppercase">
+              Recent Activity
+            </CardTitle>
             <CardDescription>Latest dashboard events.</CardDescription>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent className="font-mono">
             {[
               {
                 label: "New subscription",
@@ -109,13 +152,15 @@ export default function Home() {
             ].map((item) => (
               <div
                 key={item.label}
-                className="flex items-center justify-between border-b border-border pb-3 last:border-0"
+                className="flex items-center justify-between border-b border-border py-2 last:border-0"
               >
-                <div>
-                  <p className="text-sm font-medium">{item.label}</p>
+                <div className="min-w-0">
+                  <p className="truncate text-sm text-foreground">
+                    {item.label}
+                  </p>
                   <p className="text-xs text-muted-foreground">{item.time}</p>
                 </div>
-                <span className="text-sm font-medium tabular-nums">
+                <span className="shrink-0 pl-3 text-sm font-medium tabular-nums text-cyan-300">
                   {item.amount}
                 </span>
               </div>

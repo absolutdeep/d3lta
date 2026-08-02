@@ -72,48 +72,67 @@ export default function WeatherPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Weather</h1>
-        <p className="text-muted-foreground">
+        <h1 className="font-display text-2xl font-bold tracking-[0.2em] uppercase text-foreground">
+          Weather
+        </h1>
+        <p className="text-sm text-muted-foreground">
           Current conditions and 7-day forecast for Farmingdale, NY 11735.
         </p>
       </div>
 
       {error && (
-        <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 font-mono text-sm text-red-400">
           Failed to load weather: {error}
         </div>
       )}
 
       {!data && loading && (
-        <p className="text-sm text-muted-foreground">Loading weather…</p>
+        <p className="font-mono text-sm text-muted-foreground">
+          LOADING WEATHER…
+        </p>
       )}
 
       {data && (
         <>
-          <Card>
+          <Card className="border-cyan-500/40 bg-cyan-500/5">
             <CardHeader>
-              <CardTitle className="text-base">{data.location}</CardTitle>
+              <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground">
+                <span className="text-cyan-400">●</span> {data.location}
+              </CardTitle>
             </CardHeader>
             <CardContent>
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 text-primary">
+                  <div className="h-12 w-12 text-cyan-400">
                     {now && weatherIcon(0, now.isDay)}
                   </div>
                   <div>
-                    <p className="text-4xl font-bold">
+                    <p className="font-display text-4xl font-bold tabular-nums text-cyan-300">
                       {Math.round(now!.temperature)}°F
                     </p>
-                    <p className="text-sm text-muted-foreground">
+                    <p className="font-mono text-sm text-muted-foreground">
                       {now!.weatherLabel}
                     </p>
                   </div>
                 </div>
-                <div className="space-y-1 text-right text-sm text-muted-foreground">
-                  <p>Feels like {Math.round(now!.apparentTemperature)}°F</p>
-                  <p>Humidity {now!.humidity}%</p>
+                <div className="space-y-1 text-right font-mono text-sm text-muted-foreground">
+                  <p>
+                    Feels like{" "}
+                    <span className="tabular-nums text-amber-300">
+                      {Math.round(now!.apparentTemperature)}°F
+                    </span>
+                  </p>
+                  <p>
+                    Humidity{" "}
+                    <span className="tabular-nums text-fuchsia-300">
+                      {now!.humidity}%
+                    </span>
+                  </p>
                   <p className="flex items-center justify-end gap-1">
-                    <Wind className="h-3 w-3" /> {Math.round(now!.windSpeed)}{" "}
+                    <Wind className="h-3 w-3 text-emerald-400" />{" "}
+                    <span className="tabular-nums text-emerald-300">
+                      {Math.round(now!.windSpeed)}
+                    </span>{" "}
                     mph
                   </p>
                 </div>
@@ -130,18 +149,32 @@ export default function WeatherPage() {
                       weekday: "short",
                     });
               return (
-                <Card key={d.date}>
+                <Card
+                  key={d.date}
+                  className={
+                    i === 0
+                      ? "border-emerald-500/40 bg-emerald-500/5"
+                      : "border-cyan-500/40 bg-cyan-500/5"
+                  }
+                >
                   <CardContent className="space-y-1 p-4 text-center">
-                    <p className="text-sm font-medium">{label}</p>
-                    <div className="mx-auto flex h-8 w-8 justify-center text-primary">
+                    <p className="text-xs font-semibold tracking-[0.15em] uppercase text-muted-foreground">
+                      {label}
+                    </p>
+                    <div className="mx-auto flex h-8 w-8 justify-center text-cyan-400">
                       {weatherIcon(d.weatherCode, true)}
                     </div>
-                    <p className="text-xs text-muted-foreground">
+                    <p className="font-mono text-[10px] text-muted-foreground">
                       {d.weatherLabel}
                     </p>
-                    <p className="text-sm">
-                      {Math.round(d.temperatureMax)}° /{" "}
-                      {Math.round(d.temperatureMin)}°
+                    <p className="font-mono text-sm tabular-nums">
+                      <span className="text-amber-300">
+                        {Math.round(d.temperatureMax)}°
+                      </span>{" "}
+                      /{" "}
+                      <span className="text-cyan-300">
+                        {Math.round(d.temperatureMin)}°
+                      </span>
                     </p>
                   </CardContent>
                 </Card>
@@ -151,7 +184,12 @@ export default function WeatherPage() {
         </>
       )}
 
-      <Button variant="outline" onClick={() => void load()} disabled={loading}>
+      <Button
+        variant="outline"
+        onClick={() => void load()}
+        disabled={loading}
+        className="border-cyan-500/40 text-cyan-300"
+      >
         Refresh
       </Button>
     </div>

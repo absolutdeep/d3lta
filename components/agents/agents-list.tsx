@@ -46,12 +46,18 @@ function formatRelativeTime(tsSeconds: number | null): string {
   return `${months}mo ago`;
 }
 
-function ProfileCard({ agent }: { agent: ProfileAgent }) {
+function ProfileCard({
+  agent,
+  accent,
+}: {
+  agent: ProfileAgent;
+  accent: string;
+}) {
   return (
-    <Card>
+    <Card className={accent}>
       <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
         <CardTitle className="flex items-center gap-2 text-base">
-          <Bot className="h-4 w-4" /> {agent.name}
+          <Bot className="h-4 w-4 text-fuchsia-300" /> {agent.name}
         </CardTitle>
         <Badge variant={agent.running ? "default" : "secondary"}>
           {agent.running ? "Running" : "Idle"}
@@ -59,25 +65,33 @@ function ProfileCard({ agent }: { agent: ProfileAgent }) {
       </CardHeader>
       <CardContent className="space-y-1 text-sm">
         <div className="flex items-center justify-between">
-          <span className="text-muted-foreground">Model</span>
-          <span className="font-medium">{agent.model ?? "—"}</span>
+          <span className="text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-foreground">
+            Model
+          </span>
+          <span className="truncate font-mono text-xs">
+            {agent.model ?? "—"}
+          </span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-muted-foreground">Provider</span>
-          <span className="font-medium">{agent.provider ?? "—"}</span>
+          <span className="text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-foreground">
+            Provider
+          </span>
+          <span className="font-mono text-xs">{agent.provider ?? "—"}</span>
         </div>
         <div className="flex items-center justify-between">
-          <span className="text-muted-foreground">Sessions</span>
+          <span className="text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-foreground">
+            Sessions
+          </span>
           <Badge variant="outline" className="gap-1">
             <FolderOpen className="h-3 w-3" /> {agent.sessionCount}
           </Badge>
         </div>
         <div className="mt-3 border-t pt-3">
-          <div className="mb-1 flex items-center gap-1 text-xs font-medium text-muted-foreground">
+          <div className="mb-1 flex items-center gap-1 text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-foreground">
             <Clock className="h-3 w-3" /> Last Session
           </div>
           {agent.lastSession ? (
-            <div className="space-y-0.5">
+            <div className="space-y-0.5 font-mono text-xs">
               <p
                 className="truncate font-medium"
                 title={agent.lastSession.title ?? agent.lastSession.id}
@@ -119,8 +133,10 @@ export function AgentsList() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">Agents</h1>
-          <p className="text-muted-foreground">
+          <h1 className="font-display text-2xl font-bold tracking-[0.2em] uppercase text-foreground">
+            Agents
+          </h1>
+          <p className="text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground">
             Configured Hermes profiles on this system.
           </p>
         </div>
@@ -161,8 +177,10 @@ export function AgentsList() {
         <div className="space-y-8">
           <section>
             <div className="mb-3 flex items-center gap-2">
-              <Bot className="h-4 w-4 text-muted-foreground" />
-              <h2 className="text-lg font-semibold">Profiles</h2>
+              <Bot className="h-4 w-4 text-fuchsia-400" />
+              <h2 className="font-display text-sm font-semibold tracking-[0.2em] uppercase">
+                Profiles
+              </h2>
               <Badge variant="outline">{data.profiles.length}</Badge>
             </div>
             {data.profiles.length === 0 ? (
@@ -171,8 +189,12 @@ export function AgentsList() {
               </p>
             ) : (
               <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-                {data.profiles.map((p) => (
-                  <ProfileCard key={p.name} agent={p} />
+                {data.profiles.map((p, i) => (
+                  <ProfileCard
+                    key={p.name}
+                    agent={p}
+                    accent={PROFILE_ACCENTS[i % PROFILE_ACCENTS.length]}
+                  />
                 ))}
               </div>
             )}
@@ -186,3 +208,11 @@ export function AgentsList() {
     </div>
   );
 }
+
+// Per-profile neon border accent, mirrored from the HUD pack.
+const PROFILE_ACCENTS = [
+  "border-fuchsia-500/40",
+  "border-cyan-500/40",
+  "border-emerald-500/40",
+  "border-amber-500/40",
+];

@@ -115,16 +115,18 @@ export default function RemindersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Reminders</h1>
-        <p className="text-muted-foreground">
+        <h1 className="font-display text-2xl font-bold tracking-[0.2em] uppercase text-foreground">
+          Reminders
+        </h1>
+        <p className="text-sm text-muted-foreground">
           Basic reminder tracking. Add a reminder, mark it done, or remove it.
         </p>
       </div>
 
-      <Card>
+      <Card className="border-fuchsia-500/40 bg-fuchsia-500/5">
         <CardHeader>
-          <CardTitle className="flex items-center gap-2 text-base">
-            <Plus className="h-4 w-4" /> New reminder
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground">
+            <Plus className="h-4 w-4 text-fuchsia-400" /> New reminder
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-3">
@@ -150,44 +152,62 @@ export default function RemindersPage() {
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
           />
-          <Button onClick={() => void create()} disabled={!title.trim()}>
+          <Button
+            className="border-fuchsia-500/40 text-fuchsia-300"
+            onClick={() => void create()}
+            disabled={!title.trim()}
+          >
             <Plus className="mr-2 h-4 w-4" /> Add reminder
           </Button>
         </CardContent>
       </Card>
 
       {error && (
-        <div className="rounded-md bg-red-50 px-3 py-2 text-sm text-red-700 dark:bg-red-950 dark:text-red-300">
+        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 font-mono text-sm text-red-400">
           Failed to load reminders: {error}
         </div>
       )}
 
-      <Card>
+      <Card className="border-cyan-500/40 bg-cyan-500/5">
         <CardHeader>
-          <CardTitle className="text-base">
-            Reminders <Badge variant="outline">{reminders.length}</Badge>
+          <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground">
+            <Bell className="h-4 w-4 text-cyan-400" /> Reminders{" "}
+            <Badge
+              variant="outline"
+              className="border-cyan-500/40 font-mono text-cyan-300 tabular-nums"
+            >
+              {reminders.length}
+            </Badge>
           </CardTitle>
         </CardHeader>
         <CardContent>
           {reminders.length === 0 ? (
             <p className="text-sm text-muted-foreground">No reminders yet.</p>
           ) : (
-            <ul className="space-y-2">
+            <ul className="space-y-2 font-mono">
               {reminders.map((r) => (
                 <li
                   key={r.id}
-                  className="flex items-start justify-between gap-3 rounded-md border border-border p-3"
+                  className={`flex items-start justify-between gap-3 rounded-md border p-3 transition-colors hover:bg-white/5 dark:hover:bg-white/5 ${
+                    r.completed
+                      ? "border-emerald-500/40 bg-emerald-500/5"
+                      : "border-fuchsia-500/40 bg-fuchsia-500/5"
+                  }`}
                 >
                   <div className="min-w-0">
                     <p
-                      className={`font-medium ${r.completed ? "line-through text-muted-foreground" : ""}`}
+                      className={`font-medium ${
+                        r.completed
+                          ? "line-through text-muted-foreground"
+                          : "text-foreground"
+                      }`}
                     >
                       {r.title}
                     </p>
                     {r.notes && (
                       <p className="text-sm text-muted-foreground">{r.notes}</p>
                     )}
-                    <p className="text-xs text-muted-foreground">
+                    <p className="text-xs text-muted-foreground tabular-nums">
                       {formatDue(r.dueAt)}
                     </p>
                   </div>

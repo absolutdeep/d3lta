@@ -36,16 +36,18 @@ export function MobileNav() {
       </SheetTrigger>
       <SheetContent side="left" className="w-72">
         <SheetHeader>
-          <SheetTitle className="flex items-center gap-2">
-            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md bg-primary text-primary-foreground">
+          <SheetTitle className="flex items-center gap-2.5">
+            <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-md border border-fuchsia-500/40 bg-fuchsia-500/10 text-fuchsia-300 shadow-[0_0_12px_rgba(217,70,239,0.18)]">
               <Orbit className="h-4 w-4" />
             </span>
-            d3lta
+            <span className="font-display text-base font-bold tracking-[0.3em]">
+              D3LTA
+            </span>
           </SheetTitle>
         </SheetHeader>
 
-        <nav className="flex flex-col gap-1 px-2" aria-label="Mobile">
-          {navItems.map((item) => {
+        <nav className="flex flex-col gap-1.5 px-2" aria-label="Mobile">
+          {navItems.map((item, i) => {
             const Icon = item.icon;
             const active = pathname === item.href;
             return (
@@ -54,14 +56,20 @@ export function MobileNav() {
                   href={item.href}
                   aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex items-center gap-3 rounded-md px-3 py-2 text-sm font-medium transition-colors focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none",
+                    "flex items-center gap-3 rounded-md border px-3 py-2 text-xs font-medium uppercase tracking-[0.14em] transition-[background-color,color,border-color] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:outline-none",
                     active
                       ? "bg-sidebar-accent text-sidebar-accent-foreground"
-                      : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground",
+                      : "border-border text-sidebar-foreground/70 hover:bg-sidebar-accent/40 hover:text-sidebar-foreground",
+                    mobileAccent(i),
                   )}
                 >
-                  <Icon className="h-4 w-4 shrink-0" />
-                  <span>{item.label}</span>
+                  <Icon
+                    className={cn(
+                      "h-4 w-4 shrink-0",
+                      active && "text-fuchsia-300",
+                    )}
+                  />
+                  <span className="truncate font-display">{item.label}</span>
                 </Link>
               </SheetClose>
             );
@@ -70,4 +78,16 @@ export function MobileNav() {
       </SheetContent>
     </Sheet>
   );
+}
+
+// Per-module neon border accent, matching the desktop sidebar.
+const MOBILE_ACCENTS = [
+  "border-fuchsia-500/40 hover:border-fuchsia-500/70",
+  "border-cyan-500/40 hover:border-cyan-500/70",
+  "border-emerald-500/40 hover:border-emerald-500/70",
+  "border-amber-500/40 hover:border-amber-500/70",
+];
+
+function mobileAccent(i: number) {
+  return MOBILE_ACCENTS[i % MOBILE_ACCENTS.length];
 }
