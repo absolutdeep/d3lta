@@ -1,0 +1,228 @@
+/* DateTime picker — dark cyberpunk theme for react-datepicker.
+   Imported AFTER react-datepicker's base CSS so these overrides win the
+   cascade and replace its default blue/white look. */
+
+.react-datepicker {
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  background-color: transparent;
+  border: 1px solid rgb(0 255 255 / 0.3);
+  border-radius: 0.5rem;
+  box-shadow: 0 0 14px rgb(0 255 255 / 0.25);
+  color: rgb(165 243 252); /* cyan-200 */
+}
+
+.react-datepicker__header {
+  background-color: transparent;
+  border-bottom: 1px solid rgb(0 255 255 / 0.2);
+}
+
+.react-datepicker__current-month,
+.react-datepicker__month-select,
+.react-datepicker__year-select,
+.react-datepicker__month-option,
+.react-datepicker__year-option {
+  color: rgb(165 243 252); /* cyan-200 */
+}
+
+.react-datepicker__day-name {
+  color: rgb(34 211 238); /* cyan-400 */
+  font-size: 0.7rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+}
+
+.react-datepicker__day {
+  border-radius: 0.375rem;
+  color: rgb(165 243 252);
+}
+.react-datepicker__day:hover {
+  background-color: rgb(0 255 255 / 0.15);
+  color: #fff;
+}
+
+.react-datepicker__day--outside-month {
+  color: rgb(165 243 252 / 0.3);
+}
+
+.react-datepicker__day--today {
+  border: 1px solid rgb(0 255 255 / 0.5);
+}
+
+.react-datepicker__day--selected,
+.react-datepicker__day--keyboard-selected {
+  background-color: rgb(0 255 255 / 0.3);
+  color: #fff;
+  box-shadow: 0 0 8px rgb(0 255 255);
+}
+
+.react-datepicker__day--disabled,
+.react-datepicker__day--outside-month.react-datepicker__day--disabled {
+  color: rgb(165 243 252 / 0.25);
+}
+
+.react-datepicker__week-number {
+  color: rgb(165 243 252 / 0.5);
+}
+
+.react-datepicker__navigation-icon::before,
+.react-datepicker__month-read-view__down-arrow,
+.react-datepicker__year-read-view__down-arrow {
+  border-color: rgb(34 211 238); /* cyan-400 */
+}
+.react-datepicker__navigation:hover *::before {
+  border-color: #fff;
+}
+
+/* --- Native form control overrides (select, input[type=time]) --- */
+/* Force native selects and time input to match cyberpunk theme */
+
+select,
+input[type="time"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  background-color: rgb(0 0 0 / 0.4) !important;
+  border: 1px solid rgb(0 255 255 / 0.3) !important;
+  border-radius: 0.375rem;
+  color: rgb(165 243 252) !important;
+  font-family: var(--font-mono), ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 0.875rem;
+  padding: 0.375rem 0.5rem;
+  box-shadow: 0 0 4px rgb(0 255 255 / 0.15);
+}
+
+select:hover,
+input[type="time"]:hover {
+  border-color: rgb(0 255 255 / 0.6) !important;
+  background-color: rgb(0 255 255 / 0.05) !important;
+}
+
+select:focus,
+input[type="time"]:focus {
+  outline: none !important;
+  border-color: rgb(0 255 255) !important;
+  box-shadow: 0 0 0 2px rgb(0 255 255 / 0.3), 0 0 8px rgb(0 255 255 / 0.25) !important;
+}
+
+/* Select dropdown arrow (webkit) */
+select::-webkit-select-box {
+  border-left: 1px solid rgb(0 255 255 / 0.3);
+  background: rgb(0 255 255 / 0.1);
+}
+
+/* Native time input spin buttons */
+input[type="time"]::-webkit-inner-spin-button,
+input[type="time"]::-webkit-outer-spin-button {
+  -webkit-appearance: none;
+  appearance: none;
+  margin: 0;
+}
+
+/* Time input picker dropdown list (webkit) */
+input[type="time"]::-webkit-calendar-picker-indicator {
+  opacity: 0.7;
+  filter: invert(0.9) hue-rotate(140deg) saturate(5);
+  cursor: pointer;
+}
+input[type="time"]::-webkit-calendar-picker-indicator:hover {
+  opacity: 1;
+}
+
+/* Firefox time input */
+input[type="time"]::-moz-focus-inner {
+  border: 0;
+}
+
+/* Option elements in native select */
+option {
+  background-color: #000 !important;
+  color: rgb(165 243 252) !important;
+  padding: 0.25rem 0.5rem;
+}
+
+option:checked,
+option:focus,
+option:hover {
+  background-color: rgb(0 255 255 / 0.3) !important;
+  color: #fff !important;
+}
+
+/* Scrollbar for select dropdown */
+select::-webkit-scrollbar,
+option::-webkit-scrollbar {
+  width: 8px;
+}
+select::-webkit-scrollbar-track,
+option::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.6);
+}
+select::-webkit-scrollbar-thumb,
+option::-webkit-scrollbar-thumb {
+  background: rgb(0 255 255 / 0.4);
+  border-radius: 4px;
+}
+select::-webkit-scrollbar-thumb:hover,
+option::-webkit-scrollbar-thumb:hover {
+  background: rgb(0 255 255 / 0.6);
+}
+
+/* --- Time picker (react-datepicker showTimeSelect) --- */
+/* Force black background on time column and list */
+
+.react-datepicker__time-container {
+  background-color: #000 !important;
+  border-left: 1px solid rgb(0 255 255 / 0.2);
+  width: 27% !important;
+  flex-shrink: 0 !important;
+}
+
+.react-datepicker__time {
+  background-color: #000 !important;
+  width: 100% !important;
+}
+
+.react-datepicker__time-box {
+  background-color: #000 !important;
+  width: 100% !important;
+}
+
+.react-datepicker__month-container {
+  flex: 1 1 auto !important;
+  min-width: 0 !important;
+}
+
+.react-datepicker__time-list {
+  background-color: #000 !important;
+}
+
+.react-datepicker__time-list-item {
+  background-color: #000 !important;
+  color: rgb(165 243 252) !important;
+}
+
+.react-datepicker__time-list-item:hover,
+.react-datepicker__time-list-item--selected {
+  background-color: rgb(0 255 255 / 0.3) !important;
+  color: #fff !important;
+}
+
+.react-datepicker__time-list-item--disabled {
+  color: rgb(165 243 252 / 0.25) !important;
+}
+
+.react-datepicker-time__header {
+  background-color: #000 !important;
+  color: rgb(34 211 238) !important;
+  padding-right: 0.125rem !important;
+  margin-right: 0 !important;
+}
+
+.react-datepicker-time__caption {
+  color: rgb(34 211 238) !important;
+}
+
+.react-datepicker__time-list-item::before,
+.react-datepicker__time-list-item::after {
+  background: none !important;
+}

@@ -38,6 +38,9 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // Build into an isolated dir when set (CI + verification without touching a
+  // running dev server's .next / Turbopack lock).
+  distDir: process.env.D3LTA_BUILD_DIST || ".next",
   // ws + node-pty are native/server packages — keep them out of the client
   // bundle so the `node-pty` binary is loaded at runtime, not bundled for a
   // browser.

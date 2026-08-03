@@ -2,7 +2,7 @@
 // POST /api/tasks — create a task
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { desc } from "drizzle-orm";
+import { asc, desc, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { tasks } from "@/lib/db/schema";
 import { dbError, serverLog } from "@/lib/error-handling";
@@ -19,7 +19,10 @@ const taskSchema = z.object({
 export async function GET() {
   try {
     const db = await getDb();
-    const rows = await db.select().from(tasks).orderBy(desc(tasks.createdAt));
+    const rows = await db
+      .select()
+      .from(tasks)
+      .orderBy(asc(tasks.sortOrder), desc(tasks.createdAt));
     return NextResponse.json({ tasks: rows });
   } catch (error) {
     dbError(SOURCE, "list", error);
@@ -42,6 +45,10 @@ export async function POST(req: NextRequest) {
     const { title, description, status, dueAt } = parsed.data;
 
     const db = await getDb();
+    // New tasks land at the top of the sortable list (lowest sort_order).
+    const [{ minSort }] = await db
+      .select({ minSort: sql<number>`COALESCE(MIN(${tasks.sortOrder}), 0)` })
+      .from(tasks);
     const result = await db
       .insert(tasks)
       .values({
@@ -49,6 +56,7 @@ export async function POST(req: NextRequest) {
         description: description ?? null,
         status,
         dueAt: dueAt ? new Date(dueAt) : null,
+        sortOrder: minSort - 1,
       })
       .returning();
 

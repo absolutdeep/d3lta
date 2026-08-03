@@ -53,8 +53,8 @@ export const useThemeStore = create<ThemeState>()(
     persist(
       (set, get) => ({
         // Initial state
-        currentTheme: "system",
-        isDarkMode: false,
+        currentTheme: "dark",
+        isDarkMode: true,
         themeLibrary: {},
         activeThemeId: null,
         sidebarCollapsed: false,

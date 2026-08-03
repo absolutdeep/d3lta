@@ -102,11 +102,7 @@ export default function WeatherPage() {
               </CardTitle>
             </CardHeader>
             <CardContent>
-<<<<<<< HEAD
-              <div className="flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-center">
-=======
               <div className="flex flex-col items-center justify-between gap-4 sm:flex-row">
->>>>>>> b01b4b2078a78abedf01c2296cd3f0ac5ad90e24
                 <div className="flex items-center gap-4">
                   <div className="h-12 w-12 text-cyan-700 dark:text-cyan-400">
                     {now && weatherIcon(0, now.isDay)}
@@ -120,11 +116,7 @@ export default function WeatherPage() {
                     </p>
                   </div>
                 </div>
-<<<<<<< HEAD
-                <div className="w-full space-y-1 font-mono text-sm text-left text-muted-foreground sm:w-auto sm:text-right">
-=======
                 <div className="space-y-1 text-center font-mono text-sm text-muted-foreground sm:text-right">
->>>>>>> b01b4b2078a78abedf01c2296cd3f0ac5ad90e24
                   <p>
                     Feels like{" "}
                     <span className="tabular-nums text-amber-700 dark:text-amber-300">
@@ -137,11 +129,7 @@ export default function WeatherPage() {
                       {now!.humidity}%
                     </span>
                   </p>
-<<<<<<< HEAD
-                  <p className="flex items-center justify-start gap-1 sm:justify-end">
-=======
                   <p className="flex items-center justify-end gap-1">
->>>>>>> b01b4b2078a78abedf01c2296cd3f0ac5ad90e24
                     <Wind className="h-3 w-3 text-emerald-700 dark:text-emerald-400" />{" "}
                     <span className="tabular-nums text-emerald-700 dark:text-emerald-300">
                       {Math.round(now!.windSpeed)}

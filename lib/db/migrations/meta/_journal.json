@@ -15,6 +15,13 @@
       "when": 1785694266536,
       "tag": "0001_flaky_crystal",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "6",
+      "when": 1785719283685,
+      "tag": "0002_tan_major_mapleleaf",
+      "breakpoints": true
     }
   ]
 }
