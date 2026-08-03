@@ -52,6 +52,7 @@ export const reminders = sqliteTable("reminders", {
   notes: text("notes"),
   dueAt: integer("due_at", { mode: "timestamp" }),
   completed: integer("completed", { mode: "boolean" }).default(false).notNull(),
+  sortOrder: integer("sort_order").default(0).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),
@@ -66,6 +67,7 @@ export const tasks = sqliteTable("tasks", {
     .default("pending")
     .notNull(),
   dueAt: integer("due_at", { mode: "timestamp" }),
+  sortOrder: integer("sort_order").default(0).notNull(),
   createdAt: integer("created_at", { mode: "timestamp" })
     .default(sql`CURRENT_TIMESTAMP`)
     .notNull(),

@@ -1,7 +1,24 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { Bell, Plus, Trash2, Check } from "lucide-react";
+import { Bell, Plus, Trash2, Check, GripVertical } from "lucide-react";
+import {
+  DndContext,
+  closestCenter,
+  PointerSensor,
+  KeyboardSensor,
+  useSensor,
+  useSensors,
+  type DragEndEvent,
+} from "@dnd-kit/core";
+import {
+  arrayMove,
+  SortableContext,
+  sortableKeyboardCoordinates,
+  verticalListSortingStrategy,
+  useSortable,
+} from "@dnd-kit/sortable";
+import { CSS } from "@dnd-kit/utilities";
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -27,6 +44,94 @@ function formatDue(dueAt: string | null): string {
   return d.toLocaleString();
 }
 
+function SortableReminder({
+  reminder,
+  onToggle,
+  onRemove,
+}: {
+  reminder: Reminder;
+  onToggle: (r: Reminder) => void;
+  onRemove: (id: number) => void;
+}) {
+  const {
+    attributes,
+    listeners,
+    setNodeRef,
+    transform,
+    transition,
+    isDragging,
+  } = useSortable({ id: String(reminder.id) });
+
+  const style = {
+    transform: CSS.Transform.toString(transform),
+    transition,
+  };
+
+  return (
+    <li
+      ref={setNodeRef}
+      style={style}
+      className={`flex items-start justify-between gap-3 rounded-md border p-3 transition-colors hover:bg-white/5 dark:hover:bg-white/5 ${
+        isDragging ? "z-10 opacity-80 ring-1 ring-border" : ""
+      } ${
+        reminder.completed
+          ? "border-emerald-500/40 bg-emerald-500/5"
+          : "border-fuchsia-500/40 bg-fuchsia-500/5"
+      }`}
+    >
+      <div className="min-w-0 flex-1">
+        <p
+          className={`font-medium ${
+            reminder.completed
+              ? "line-through text-muted-foreground"
+              : "text-foreground"
+          }`}
+        >
+          {reminder.title}
+        </p>
+        {reminder.notes && (
+          <p className="text-sm text-muted-foreground">{reminder.notes}</p>
+        )}
+        <p className="text-xs text-muted-foreground tabular-nums">
+          {formatDue(reminder.dueAt)}
+        </p>
+      </div>
+      <div className="flex shrink-0 gap-1">
+        <Button
+          variant="ghost"
+          size="sm"
+          className="cursor-grab active:cursor-grabbing"
+          aria-label={`Reorder reminder ${reminder.title}`}
+          {...attributes}
+          {...listeners}
+        >
+          <GripVertical className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => void onToggle(reminder)}
+          aria-label={
+            reminder.completed
+              ? `Mark ${reminder.title} as not done`
+              : `Mark ${reminder.title} as done`
+          }
+        >
+          <Check className="h-4 w-4" />
+        </Button>
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => void onRemove(reminder.id)}
+          aria-label={`Delete reminder ${reminder.title}`}
+        >
+          <Trash2 className="h-4 w-4" />
+        </Button>
+      </div>
+    </li>
+  );
+}
+
 export default function RemindersPage() {
   const [reminders, setReminders] = useState<Reminder[]>([]);
   const [loading, setLoading] = useState(false);
@@ -34,6 +139,13 @@ export default function RemindersPage() {
   const [title, setTitle] = useState("");
   const [notes, setNotes] = useState("");
   const [dueAt, setDueAt] = useState<Date | null>(null);
+
+  const sensors = useSensors(
+    useSensor(PointerSensor, { activationConstraint: { distance: 5 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
+    }),
+  );
 
   const load = async () => {
     setLoading(true);
@@ -104,6 +216,32 @@ export default function RemindersPage() {
     }
   };
 
+  const handleDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (!over || active.id === over.id) return;
+
+    const oldIndex = reminders.findIndex((r) => String(r.id) === active.id);
+    const newIndex = reminders.findIndex((r) => String(r.id) === over.id);
+    if (oldIndex === -1 || newIndex === -1) return;
+
+    // Optimistic reorder so the UI responds instantly, then persist.
+    const reordered = arrayMove(reminders, oldIndex, newIndex);
+    setReminders(reordered);
+    try {
+      const res = await fetch("/api/reminders/reorder", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ids: reordered.map((r) => r.id) }),
+      });
+      if (!res.ok) throw new Error(`Request failed: ${res.status}`);
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      logger.error(SOURCE, "reorder failed", { message });
+      setError(message);
+      await load();
+    }
+  };
+
   // Initial load (deferred per react-hooks/set-state-in-effect guidance)
   const didInit = useRef(false);
   useEffect(() => {
@@ -120,6 +258,7 @@ export default function RemindersPage() {
         </h1>
         <p className="text-sm text-muted-foreground">
           Basic reminder tracking. Add a reminder, mark it done, or remove it.
+          Drag the grip handle to reorder.
         </p>
       </div>
 
@@ -186,58 +325,27 @@ export default function RemindersPage() {
           {reminders.length === 0 ? (
             <p className="text-sm text-muted-foreground">No reminders yet.</p>
           ) : (
-            <ul className="space-y-2 font-mono">
-              {reminders.map((r) => (
-                <li
-                  key={r.id}
-                  className={`flex items-start justify-between gap-3 rounded-md border p-3 transition-colors hover:bg-white/5 dark:hover:bg-white/5 ${
-                    r.completed
-                      ? "border-emerald-500/40 bg-emerald-500/5"
-                      : "border-fuchsia-500/40 bg-fuchsia-500/5"
-                  }`}
-                >
-                  <div className="min-w-0">
-                    <p
-                      className={`font-medium ${
-                        r.completed
-                          ? "line-through text-muted-foreground"
-                          : "text-foreground"
-                      }`}
-                    >
-                      {r.title}
-                    </p>
-                    {r.notes && (
-                      <p className="text-sm text-muted-foreground">{r.notes}</p>
-                    )}
-                    <p className="text-xs text-muted-foreground tabular-nums">
-                      {formatDue(r.dueAt)}
-                    </p>
-                  </div>
-                  <div className="flex shrink-0 gap-1">
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => void toggle(r)}
-                      aria-label={
-                        r.completed
-                          ? `Mark ${r.title} as not done`
-                          : `Mark ${r.title} as done`
-                      }
-                    >
-                      <Check className="h-4 w-4" />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="sm"
-                      onClick={() => void remove(r.id)}
-                      aria-label={`Delete reminder ${r.title}`}
-                    >
-                      <Trash2 className="h-4 w-4" />
-                    </Button>
-                  </div>
-                </li>
-              ))}
-            </ul>
+            <DndContext
+              sensors={sensors}
+              collisionDetection={closestCenter}
+              onDragEnd={(e) => void handleDragEnd(e)}
+            >
+              <SortableContext
+                items={reminders.map((r) => String(r.id))}
+                strategy={verticalListSortingStrategy}
+              >
+                <ul className="space-y-2 font-mono">
+                  {reminders.map((r) => (
+                    <SortableReminder
+                      key={r.id}
+                      reminder={r}
+                      onToggle={toggle}
+                      onRemove={remove}
+                    />
+                  ))}
+                </ul>
+              </SortableContext>
+            </DndContext>
           )}
         </CardContent>
       </Card>

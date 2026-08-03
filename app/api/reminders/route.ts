@@ -2,7 +2,7 @@
 // POST /api/reminders — create a reminder
 import { NextRequest, NextResponse } from "next/server";
 import { z } from "zod";
-import { desc } from "drizzle-orm";
+import { asc, desc, sql } from "drizzle-orm";
 import { getDb } from "@/lib/db/client";
 import { reminders } from "@/lib/db/schema";
 import { dbError, serverLog } from "@/lib/error-handling";
@@ -22,7 +22,7 @@ export async function GET() {
     const rows = await db
       .select()
       .from(reminders)
-      .orderBy(desc(reminders.createdAt));
+      .orderBy(asc(reminders.sortOrder), desc(reminders.createdAt));
     return NextResponse.json({ reminders: rows });
   } catch (error) {
     dbError(SOURCE, "list", error);
@@ -45,6 +45,12 @@ export async function POST(req: NextRequest) {
     const { title, notes, dueAt, completed } = parsed.data;
 
     const db = await getDb();
+    // New reminders land at the top of the sortable list (lowest sort_order).
+    const [{ minSort }] = await db
+      .select({
+        minSort: sql<number>`COALESCE(MIN(${reminders.sortOrder}), 0)`,
+      })
+      .from(reminders);
     const result = await db
       .insert(reminders)
       .values({
@@ -52,6 +58,7 @@ export async function POST(req: NextRequest) {
         notes: notes ?? null,
         dueAt: dueAt ? new Date(dueAt) : null,
         completed: completed ?? false,
+        sortOrder: minSort - 1,
       })
       .returning();
 

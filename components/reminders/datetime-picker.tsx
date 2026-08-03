@@ -1,12 +1,12 @@
-"use client";
-
 import * as React from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import "./datetime-picker.css";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
-import { Calendar } from "@/components/ui/calendar";
 import {
   Popover,
   PopoverContent,
@@ -22,12 +22,47 @@ interface DateTimePickerProps {
   "aria-label"?: string;
 }
 
-function toTimeValue(d: Date | null): string {
-  if (!d) return "";
-  // Local HH:mm (no timezone shift) for the <input type="time">
-  const h = String(d.getHours()).padStart(2, "0");
-  const m = String(d.getMinutes()).padStart(2, "0");
-  return `${h}:${m}`;
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+
+/** Number of days in a given year/month (0-based month). */
+function daysInMonth(year: number, month: number): number {
+  return new Date(year, month + 1, 0).getDate();
+}
+
+/** Build a Date preserving the time portion of `base`. */
+function withTime(date: Date, base: Date): Date {
+  const next = new Date(
+    date.getFullYear(),
+    date.getMonth(),
+    date.getDate(),
+    base.getHours(),
+    base.getMinutes(),
+    0,
+    0,
+  );
+  return next;
+}
+
+function selectClasses(base: string): string {
+  return cn(
+    "h-8 rounded-md border border-[rgba(0,255,255,0.3)] bg-black/40 px-2 text-sm text-cyan-200",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500",
+    "shadow-[0_0_4px_rgb(0,255,255)]",
+    base,
+  );
 }
 
 export function DateTimePicker({
@@ -40,25 +75,30 @@ export function DateTimePicker({
 }: DateTimePickerProps) {
   const [open, setOpen] = React.useState(false);
 
-  const handleSelect = (day: Date | undefined) => {
-    if (!day) return;
-    const base = value ?? new Date();
-    const next = new Date(day);
-    next.setHours(base.getHours(), base.getMinutes(), 0, 0);
-    onChange(next);
+  // Reference date used to seed the dropdowns when no value is set yet.
+  const now = new Date();
+  const year = value ? value.getFullYear() : now.getFullYear();
+  const month = value ? value.getMonth() : now.getMonth();
+  const day = value ? value.getDate() : now.getDate();
+
+  const currentYear = now.getFullYear();
+  const years = Array.from({ length: 11 }, (_, i) => currentYear - 5 + i);
+
+  const handleSelect = (date: Date | null) => {
+    if (!date) return;
+    onChange(withTime(date, value ?? new Date()));
   };
 
-  const handleTime = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const t = e.target.value; // "HH:mm"
+  const handleDatePart = (part: "year" | "month" | "day", raw: string) => {
     const base = value ?? new Date();
-    const next = new Date(base);
-    if (t) {
-      const [h, m] = t.split(":").map(Number);
-      next.setHours(h, m, 0, 0);
-    } else {
-      next.setHours(0, 0, 0, 0);
-    }
-    onChange(next);
+    const nextYear = part === "year" ? Number(raw) : base.getFullYear();
+    const nextMonth = part === "month" ? Number(raw) : base.getMonth();
+    const maxDay = daysInMonth(nextYear, nextMonth);
+    const nextDay =
+      part === "day"
+        ? Math.min(Number(raw), maxDay)
+        : Math.min(base.getDate(), maxDay);
+    onChange(withTime(new Date(nextYear, nextMonth, nextDay), base));
   };
 
   return (
@@ -73,6 +113,10 @@ export function DateTimePicker({
           className={cn(
             "w-full justify-start text-left font-normal",
             !value && "text-muted-foreground",
+            "border-[rgba(0,255,255,0.4)] hover:border-[rgba(0,255,255,0.6)] hover:bg-[rgba(0,255,255,0.05)]",
+            "text-cyan-400 dark:text-cyan-200",
+            "shadow-[0_0_8px_rgb(0,255,255)] hover:shadow-[0_0_12px_rgb(0,255,255)]",
+            "transition-all duration-200",
             className,
           )}
         >
@@ -84,20 +128,69 @@ export function DateTimePicker({
           )}
         </Button>
       </PopoverTrigger>
-      <PopoverContent className="w-auto p-0" align="start">
-        <Calendar
-          mode="single"
-          selected={value ?? undefined}
-          onSelect={handleSelect}
-          initialFocus
-        />
-        <div className="flex items-center gap-2 border-t px-3 py-3">
-          <span className="text-sm text-muted-foreground">Time</span>
-          <input
-            type="time"
-            value={toTimeValue(value)}
-            onChange={handleTime}
-            className="ml-auto rounded-md border bg-transparent px-2 py-1 text-sm outline-none focus-visible:ring-2 focus-visible:ring-ring"
+      <PopoverContent
+        className={cn(
+          "w-auto p-4 border-[rgba(0,255,255,0.3)] bg-black/60 backdrop-blur-sm",
+          "shadow-[0_0_15px_rgb(0,255,255)]",
+          "text-cyan-400",
+          "outline-none",
+          "min-w-[calc(100%+20%)]",
+        )}
+        align="start"
+      >
+        <div className="space-y-4">
+          <div className="flex items-center gap-2">
+            <span className="text-xs text-cyan-400 uppercase tracking-wider">
+              DATE
+            </span>
+            <div className="ml-auto flex items-center gap-2">
+              <select
+                aria-label="Select year"
+                value={year}
+                onChange={(e) => void handleDatePart("year", e.target.value)}
+                className={selectClasses("w-[84px]")}
+              >
+                {years.map((y) => (
+                  <option key={y} value={y}>
+                    {y}
+                  </option>
+                ))}
+              </select>
+              <select
+                aria-label="Select month"
+                value={month}
+                onChange={(e) => void handleDatePart("month", e.target.value)}
+                className={selectClasses("w-[116px]")}
+              >
+                {MONTH_NAMES.map((m, i) => (
+                  <option key={m} value={i}>
+                    {m}
+                  </option>
+                ))}
+              </select>
+              <select
+                aria-label="Select day"
+                value={day}
+                onChange={(e) => void handleDatePart("day", e.target.value)}
+                className={selectClasses("w-[72px]")}
+              >
+                {Array.from({ length: daysInMonth(year, month) }, (_, i) => (
+                  <option key={i + 1} value={i + 1}>
+                    {i + 1}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+
+          <DatePicker
+            inline
+            selected={value ?? undefined}
+            onChange={handleSelect}
+            calendarStartDay={0}
+            showTimeSelect
+            timeIntervals={15}
+            className="text-cyan-400 dark:text-cyan-200"
           />
         </div>
       </PopoverContent>
