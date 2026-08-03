@@ -28,7 +28,7 @@ the Node event loop:
 
 - It calls `execFileSync(process.execPath, ["-e", LAST_SESSION_READER], ...)`
   once **per profile** (line 133), each with a `timeout: 5000`. With 7 profiles
-  (the documented count in `docs/STATUS.md`), a slow or hung `node -e` child
+  (the documented count in `../STATUS.md`), a slow or hung `node -e` child
   can stall the server for up to 35 seconds.
 - It calls `execFileSync("pgrep", ...)` (line 186) with `timeout: 3000`.
 
