@@ -95,8 +95,10 @@ function StatBar({ percent }: { percent: number }) {
 function MetaRow({ label, value }: { label: string; value: string }) {
   return (
     <div className="flex items-center justify-between gap-4 py-1 text-sm">
-      <span className="text-muted-foreground">{label}</span>
-      <span className="truncate font-medium">{value}</span>
+      <span className="text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-foreground">
+        {label}
+      </span>
+      <span className="truncate font-mono text-xs">{value}</span>
     </div>
   );
 }
@@ -123,8 +125,10 @@ export function SystemStatus() {
     <div className="space-y-6">
       <div className="flex flex-wrap items-center justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight">System</h1>
-          <p className="text-muted-foreground">
+          <h1 className="font-display text-2xl font-bold tracking-[0.2em] uppercase text-foreground">
+            System
+          </h1>
+          <p className="text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground">
             Live computer &amp; process statistics.
           </p>
         </div>
@@ -166,18 +170,22 @@ export function SystemStatus() {
       {stats && (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {/* CPU */}
-          <Card>
+          <Card className="border-cyan-500/40">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Cpu className="h-4 w-4" /> CPU
+                <Cpu className="h-4 w-4 text-cyan-300" /> CPU
               </CardTitle>
               <Badge variant="secondary">{stats.cpu.cores} cores</Badge>
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
                 <div className="mb-1 flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Usage</span>
-                  <span className="font-medium">{stats.cpu.usagePercent}%</span>
+                  <span className="text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-foreground">
+                    Usage
+                  </span>
+                  <span className="font-mono text-xs font-medium text-cyan-300">
+                    {stats.cpu.usagePercent}%
+                  </span>
                 </div>
                 <StatBar percent={stats.cpu.usagePercent} />
               </div>
@@ -190,18 +198,20 @@ export function SystemStatus() {
           </Card>
 
           {/* Memory */}
-          <Card>
+          <Card className="border-emerald-500/40">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <MemoryStick className="h-4 w-4" /> Memory
+                <MemoryStick className="h-4 w-4 text-emerald-300" /> Memory
               </CardTitle>
               <Badge variant="secondary">{stats.memory.usedPercent}%</Badge>
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
                 <div className="mb-1 flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Used</span>
-                  <span className="font-medium">
+                  <span className="text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-foreground">
+                    Used
+                  </span>
+                  <span className="font-mono text-xs font-medium text-emerald-300">
                     {formatBytes(stats.memory.usedBytes)} /{" "}
                     {formatBytes(stats.memory.totalBytes)}
                   </span>
@@ -216,18 +226,20 @@ export function SystemStatus() {
           </Card>
 
           {/* Disk */}
-          <Card>
+          <Card className="border-amber-500/40">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <HardDrive className="h-4 w-4" /> Disk
+                <HardDrive className="h-4 w-4 text-amber-300" /> Disk
               </CardTitle>
               <Badge variant="secondary">{stats.disk.usedPercent}%</Badge>
             </CardHeader>
             <CardContent className="space-y-3">
               <div>
                 <div className="mb-1 flex items-center justify-between text-sm">
-                  <span className="text-muted-foreground">Used</span>
-                  <span className="font-medium">
+                  <span className="text-[11px] font-semibold tracking-[0.15em] uppercase text-muted-foreground">
+                    Used
+                  </span>
+                  <span className="font-mono text-xs font-medium text-amber-300">
                     {formatBytes(stats.disk.usedBytes)} /{" "}
                     {formatBytes(stats.disk.totalBytes)}
                   </span>
@@ -239,10 +251,10 @@ export function SystemStatus() {
           </Card>
 
           {/* Process / Runtime */}
-          <Card>
+          <Card className="border-fuchsia-500/40">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Server className="h-4 w-4" /> Process
+                <Server className="h-4 w-4 text-fuchsia-300" /> Process
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-1">
@@ -260,10 +272,10 @@ export function SystemStatus() {
           </Card>
 
           {/* Host */}
-          <Card className="sm:col-span-2">
+          <Card className="border-cyan-500/40 sm:col-span-2">
             <CardHeader className="pb-2">
               <CardTitle className="flex items-center gap-2 text-base">
-                <Activity className="h-4 w-4" /> Host
+                <Activity className="h-4 w-4 text-cyan-300" /> Host
               </CardTitle>
             </CardHeader>
             <CardContent>

@@ -4,10 +4,14 @@ export default function UsersPage() {
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-bold tracking-tight">Users</h1>
-        <p className="text-muted-foreground">Manage users and permissions.</p>
+        <h1 className="font-display text-2xl font-bold tracking-[0.2em] uppercase text-foreground">
+          Users
+        </h1>
+        <p className="text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground">
+          Manage users and permissions.
+        </p>
       </div>
-      <Card>
+      <Card className="border-fuchsia-500/40 bg-fuchsia-500/10">
         <CardHeader>
           <CardTitle className="text-base">User Management</CardTitle>
         </CardHeader>
