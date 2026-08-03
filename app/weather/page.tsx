@@ -81,7 +81,7 @@ export default function WeatherPage() {
       </div>
 
       {error && (
-        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 font-mono text-sm text-red-400">
+        <div className="rounded-md border border-red-500/40 bg-red-500/10 px-3 py-2 font-mono text-sm text-red-700 dark:text-red-400">
           Failed to load weather: {error}
         </div>
       )}
@@ -97,17 +97,18 @@ export default function WeatherPage() {
           <Card className="border-cyan-500/40 bg-cyan-500/5">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-xs font-semibold tracking-[0.2em] uppercase text-muted-foreground">
-                <span className="text-cyan-400">●</span> {data.location}
+                <span className="text-cyan-700 dark:text-cyan-400">●</span>{" "}
+                {data.location}
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col items-center justify-between gap-4 sm:flex-row sm:items-center">
                 <div className="flex items-center gap-4">
-                  <div className="h-12 w-12 text-cyan-400">
+                  <div className="h-12 w-12 text-cyan-700 dark:text-cyan-400">
                     {now && weatherIcon(0, now.isDay)}
                   </div>
                   <div>
-                    <p className="font-display text-4xl font-bold tabular-nums text-cyan-300">
+                    <p className="font-display text-4xl font-bold tabular-nums text-cyan-700 dark:text-cyan-300">
                       {Math.round(now!.temperature)}°F
                     </p>
                     <p className="font-mono text-sm text-muted-foreground">
@@ -115,22 +116,22 @@ export default function WeatherPage() {
                     </p>
                   </div>
                 </div>
-                <div className="space-y-1 text-right font-mono text-sm text-muted-foreground">
+                <div className="w-full space-y-1 font-mono text-sm text-left text-muted-foreground sm:w-auto sm:text-right">
                   <p>
                     Feels like{" "}
-                    <span className="tabular-nums text-amber-300">
+                    <span className="tabular-nums text-amber-700 dark:text-amber-300">
                       {Math.round(now!.apparentTemperature)}°F
                     </span>
                   </p>
                   <p>
                     Humidity{" "}
-                    <span className="tabular-nums text-fuchsia-300">
+                    <span className="tabular-nums text-fuchsia-700 dark:text-fuchsia-300">
                       {now!.humidity}%
                     </span>
                   </p>
-                  <p className="flex items-center justify-end gap-1">
-                    <Wind className="h-3 w-3 text-emerald-400" />{" "}
-                    <span className="tabular-nums text-emerald-300">
+                  <p className="flex items-center justify-start gap-1 sm:justify-end">
+                    <Wind className="h-3 w-3 text-emerald-700 dark:text-emerald-400" />{" "}
+                    <span className="tabular-nums text-emerald-700 dark:text-emerald-300">
                       {Math.round(now!.windSpeed)}
                     </span>{" "}
                     mph
@@ -161,18 +162,18 @@ export default function WeatherPage() {
                     <p className="text-xs font-semibold tracking-[0.15em] uppercase text-muted-foreground">
                       {label}
                     </p>
-                    <div className="mx-auto flex h-8 w-8 justify-center text-cyan-400">
+                    <div className="mx-auto flex h-8 w-8 justify-center text-cyan-700 dark:text-cyan-400">
                       {weatherIcon(d.weatherCode, true)}
                     </div>
                     <p className="font-mono text-[10px] text-muted-foreground">
                       {d.weatherLabel}
                     </p>
                     <p className="font-mono text-sm tabular-nums">
-                      <span className="text-amber-300">
+                      <span className="text-amber-700 dark:text-amber-300">
                         {Math.round(d.temperatureMax)}°
                       </span>{" "}
                       /{" "}
-                      <span className="text-cyan-300">
+                      <span className="text-cyan-700 dark:text-cyan-300">
                         {Math.round(d.temperatureMin)}°
                       </span>
                     </p>
@@ -188,7 +189,7 @@ export default function WeatherPage() {
         variant="outline"
         onClick={() => void load()}
         disabled={loading}
-        className="border-cyan-500/40 text-cyan-300"
+        className="border-cyan-500/40 text-cyan-700 dark:text-cyan-300"
       >
         Refresh
       </Button>

@@ -91,6 +91,7 @@ export function Sidebar() {
           variant="ghost"
           size="sm"
           onClick={toggleSidebar}
+          aria-label={sidebarCollapsed ? "Expand sidebar" : "Collapse sidebar"}
           className="w-full justify-start gap-3 text-sidebar-foreground/70 hover:text-sidebar-foreground"
         >
           {sidebarCollapsed ? (

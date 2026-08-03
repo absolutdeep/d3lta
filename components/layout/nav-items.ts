@@ -11,6 +11,7 @@ import {
   Bell,
   CheckSquare,
   CloudSun,
+  SquareTerminal,
 } from "lucide-react";
 import type { ComponentType } from "react";
 
@@ -33,6 +34,7 @@ export const navItems: NavItem[] = [
   { href: "/users", label: "Users", icon: Users },
   { href: "/reports", label: "Reports", icon: FileText },
   { href: "/system", label: "System", icon: Server },
+  { href: "/ssh", label: "Shell", icon: SquareTerminal },
   { href: "/agents", label: "Agents", icon: Bot },
   { href: "/settings", label: "Settings", icon: Settings },
 ];

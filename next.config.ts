@@ -29,7 +29,7 @@ const securityHeaders = [
       "style-src 'self' 'unsafe-inline'",
       "img-src 'self' data: blob:",
       "font-src 'self' data: https://fonts.gstatic.com",
-      "connect-src 'self'",
+      "connect-src 'self' ws://127.0.0.1:* wss://127.0.0.1:* ws://localhost:* wss://localhost:*",
       "frame-ancestors 'self'",
       "base-uri 'self'",
       "form-action 'self'",
@@ -38,6 +38,10 @@ const securityHeaders = [
 ];
 
 const nextConfig: NextConfig = {
+  // ws + node-pty are native/server packages — keep them out of the client
+  // bundle so the `node-pty` binary is loaded at runtime, not bundled for a
+  // browser.
+  serverExternalPackages: ["node-pty", "ws"],
   async headers() {
     return [
       {
