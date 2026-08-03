@@ -29,7 +29,7 @@ called from `fetchThemeFromUrl` (line 207) and `validateThemeFile` (line 234)
 to recover a friendly name when the JSON doesn't carry one. But **this runs
 client-side** (the theme service is imported by client components), and a
 cross-origin `fetch` to `https://tweakcn.com/themes/<id>` is **CORS-blocked**
-from the browser. `docs/STATUS.md` §Theme name + URL pattern explicitly notes
+from the browser. `../STATUS.md` §Theme name + URL pattern explicitly notes
 this: "the page `<title>` is not fetchable cross-origin from the browser, so
 the JSON `name` is the reliable source." So `fetchThemeName` always returns
 `null` in the browser, and the fallback name logic never benefits from it.
@@ -239,7 +239,7 @@ Stop and report back (do not improvise) if:
   is the single place to update.
 - The SSRF guard only allows `https://tweakcn.com/`. If the app later needs to
   resolve names from other theme sources, extend the allowlist deliberately.
-- `docs/STATUS.md` §Theme name + URL pattern documents the CORS limitation;
+- `../STATUS.md` §Theme name + URL pattern documents the CORS limitation;
   after this lands, that note is outdated — consider updating it.
 - If plan 010 (CSP) has landed, the `connect-src` directive no longer needs
   `https://tweakcn.com` for the client (the client now calls the same-origin

@@ -160,7 +160,7 @@ export default nextConfig;
   inline styles.
 - `connect-src 'self' https://tweakcn.com`: allows the theme-service's
   client-side fetch to tweakcn. If you prefer to block it (the fetch is
-  CORS-blocked anyway per `docs/STATUS.md`), you can remove
+  CORS-blocked anyway per `../STATUS.md`), you can remove
   `https://tweakcn.com` — but keep it for now to avoid breaking the theme
   import feature.
 - `img-src data: blob:`: allows the Three.js canvas and any data-URI images.
