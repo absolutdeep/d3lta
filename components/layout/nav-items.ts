@@ -12,6 +12,7 @@ import {
   CheckSquare,
   CloudSun,
   SquareTerminal,
+  Link2,
 } from "lucide-react";
 import type { ComponentType } from "react";
 
@@ -31,6 +32,7 @@ export const navItems: NavItem[] = [
   { href: "/themes", label: "Themes", icon: Palette },
   { href: "/visuals", label: "Visuals", icon: Orbit },
   { href: "/analytics", label: "Analytics", icon: BarChart3 },
+  { href: "/shortcuts", label: "Shortcuts", icon: Link2 },
   { href: "/users", label: "Users", icon: Users },
   { href: "/reports", label: "Reports", icon: FileText },
   { href: "/system", label: "System", icon: Server },
